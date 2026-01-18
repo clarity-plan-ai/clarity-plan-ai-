@@ -4,10 +4,12 @@
 <meta charset="UTF-8">
 <title>Clarity Plan AI</title>
 <style>
-body { font-family: Arial, sans-serif; margin: 40px; }
-textarea { width: 100%; height: 120px; }
-button { padding: 10px 20px; margin-top: 10px; }
-#response { margin-top: 20px; white-space: pre-wrap; }
+body { font-family: Arial, sans-serif; margin: 40px; background-color: #f7f7f7; }
+h2 { color: #333; }
+textarea { width: 100%; height: 120px; padding: 10px; margin-top: 5px; font-size: 16px; }
+button { padding: 10px 20px; margin-top: 10px; margin-right: 10px; font-size: 16px; cursor: pointer; }
+#response { margin-top: 20px; white-space: pre-wrap; background: #fff; padding: 10px; border-radius: 5px; min-height: 50px; }
+#lang_select { margin-top: 10px; }
 </style>
 </head>
 <body>
@@ -18,21 +20,52 @@ button { padding: 10px 20px; margin-top: 10px; }
 <textarea id="problem_input" placeholder="Write your problem here / Escribe tu problema aquí"></textarea><br>
 
 <button id="submit_btn">Submit / Enviar</button>
+<button id="clear_btn">Clear / Limpiar</button>
+
+<label for="lang_select">Language / Idioma:</label>
+<select id="lang_select">
+  <option value="en" selected>English</option>
+  <option value="es">Español</option>
+</select>
 
 <div id="response">AI Response / Respuesta de la IA</div>
 
 <script>
-document.getElementById('submit_btn').onclick = async function () {
-  const problem = document.getElementById('problem_input').value;
+const submitBtn = document.getElementById('submit_btn');
+const clearBtn = document.getElementById('clear_btn');
+const problemInput = document.getElementById('problem_input');
+const responseDiv = document.getElementById('response');
+const langSelect = document.getElementById('lang_select');
 
-  const response = await fetch('https://clarity-plan--clarity-plan-ai.replit.app/api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ problem })
-  });
+// Función para enviar el problema a la IA
+submitBtn.onclick = async () => {
+  const problem = problemInput.value.trim();
+  if (!problem) {
+    alert('Please enter a problem / Por favor escribe un problema');
+    return;
+  }
 
-  const data = await response.json();
-  document.getElementById('response').innerText = data.answer;
+  responseDiv.innerText = 'Processing / Procesando...';
+
+  try {
+    const res = await fetch('https://clarity-plan--clarity-plan-ai.replit.app/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ problem, language: langSelect.value })
+    });
+
+    const data = await res.json();
+    responseDiv.innerText = data.answer || 'No response / Sin respuesta';
+  } catch (err) {
+    responseDiv.innerText = 'Error connecting to AI / Error al conectar con la IA';
+    console.error(err);
+  }
+};
+
+// Función para limpiar textarea y respuesta
+clearBtn.onclick = () => {
+  problemInput.value = '';
+  responseDiv.innerText = '';
 };
 </script>
 
