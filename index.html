@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Clarity Plan AI</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 40px; }
+textarea { width: 100%; height: 120px; }
+button { padding: 10px 20px; margin-top: 10px; }
+#response { margin-top: 20px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+
+<h2>Transform problems into action plans / Transforma problemas en planes de acción</h2>
+
+<label><strong>Describe your problem / Describe tu problema</strong></label><br>
+<textarea id="problem_input" placeholder="Write your problem here / Escribe tu problema aquí"></textarea><br>
+
+<button id="submit_btn">Submit / Enviar</button>
+
+<div id="response">AI Response / Respuesta de la IA</div>
+
+<script>
+document.getElementById('submit_btn').onclick = async function () {
+  const problem = document.getElementById('problem_input').value;
+
+  const response = await fetch('PEGAR_AQUI_URL_DEL_WORKER', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ problem })
+  });
+
+  const data = await response.json();
+  document.getElementById('response').innerText = data.answer;
+};
+</script>
+
+</body>
+</html>
